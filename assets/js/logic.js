@@ -15,55 +15,16 @@ var feedbackEl = document.getElementById("feedback")
 var correctSoundEl = document.getElementById("correctSound")
 var incorrectSoundEl = document.getElementById("incorrectSound")
 
-// Jess variables
-// var questionsA = document.getElementById("questions");
-// var timerA = document.getElementById("time");
-// var choicesA = document.getElementById("choices");
-// var submitBtn = document.getElementById("submit");
-// var startBtn = document.getElementById("start");
-// var initialsA = document.getElementById("initials");
-// var feedbackA = document.getElementById("feedback");
-// var endScreen = document.getElementById("end-screen");
-// var startScreen = document.getElementById("start-screen");
-// var finalScore = document.getElementById("final-score");
-// var questionTitle = document.getElementById("question-title");
-
-
 // Created other variables
 var penalty = 10;
 var currentQuestionIndex = 0;
+var currentQuestion = questions[currentQuestionIndex]
 var correctSound = new Audio('./assets/sfx/correct.wav');
 var incorrectSound = new Audio('./assets/sfx/incorrect.wav');
-
-
-
-
-
-
-
-// console.log (timeEl)
-// console.log (startScreenEl)
-// console.log (startButton)
-// console.log (questionsEl)
-// console.log (questionTitleEl)
-// console.log (choicesEl)
-// console.log (endScreenEl)
-// console.log (finalScoreEl)
-// console.log (initialsEl)
-// console.log (submitButton)
-// console.log (feedbackEl)
-// console.log(questionTitleEl)
-
-
-// make a start game function to start with the button click
-// function to get one question at a time
-// create function for what happens when a question is right or wrong 
-// creat function to end quiz and store their score
-// get Element. then set the attriubte
+var secondsLeft = 90;
 
 function countdown() {
-  var secondsLeft = 90;
-  var timeInterval = setInterval(function() {
+    var timeInterval = setInterval(function() {
     secondsLeft--;
     timeEl.textContent = secondsLeft + " seconds";
     if(secondsLeft <= 0) {
@@ -72,12 +33,16 @@ function countdown() {
         endQuiz();
         // and call the function of the endscreen?
       }
+      if(currentQuestionIndex === questions.length) {
+        clearInterval(timeInterval);
+        endQuiz();
+      }
   }, 1000);
 };
 
-function game() {
+function gameStart() {
     // this hides the start screen
-    startScreenEl.style.visibility = "hidden";
+    startScreenEl.setAttribute ("class", "hide");
     questionsEl.removeAttribute("class");
     // this shows the questions
   }
@@ -85,9 +50,7 @@ function game() {
 
 function retrieveQuestions() {
   var currentQuestion = questions[currentQuestionIndex];
-  console.log(currentQuestion);
   questionTitleEl.textContent = currentQuestion.question;
-console.log(questionTitleEl);
 // empty out the current choices
 choicesEl.innerHTML = "";
 currentQuestion.choices.forEach(function(choice, i) {
@@ -100,74 +63,81 @@ choicesBtn.addEventListener("click", feedback);
 });
 }
 
-function feedback() {console.log("it works!");
-correctSound.play();
-}
-
-
-
 startButton.addEventListener("click", countdown);
-startButton.addEventListener("click", game);
+startButton.addEventListener("click", gameStart);
 startButton.addEventListener("click", retrieveQuestions)
 
+// function feedback() {console.log("it works!");
+// // correctSound.play();
+// // }
 
 
+function feedback() {
+  feedbackEl.removeAttribute ("class");
+  feedbackEl.innerHTML = "";
+  if (this.value === questions[currentQuestionIndex].correctAnswer) {
+    // if the user selected the right answer
+    feedbackEl.textContent = "Correct!";
+    correctSound.play();
+    setTimeout(function() {
+      feedbackEl.innerHTML = "";
+    }, 1000);}
+    else {
+    // if the user selected the wrong answer
+    feedbackEl.textContent = "Incorrect!";
+    incorrectSound.play();
+    // minus 10 seconds for a wrong answer
+    secondsLeft -= penalty;
+    setTimeout(function() {
+      feedbackEl.innerHTML = "";
+    }, 1000);
+}
 
-// // below code is to add audio to the quiz
-// var correctAudio = new Audio('./assets/sfx/correct.wav')
-// var incorrectAudio = new Audio('./assets/sfx/incorrect.wav')
-// // Function to see if answer are correct
-// // click on question answer either generate new question or end quiz if final question, and deduct time for answering wrong
-// function questionClick() {
-//   // 'this.value' shows if the answer if correct or not. need to view why this works and textcontent doesnt work
-//   if (this.value !== questions[currentQuestionIndex].answer) {
-//     // penalty time
-//     time -= 10;
-//     if (time < 0) {
-//       time = 0;
-//     }
-//     // code shows new time on screen along side if the answer is right or wrong
-//     timerA.textContent = time;
-//     feedbackA.textContent = "Wrong!";
-//     //below lets the audio play when the right or wrong button is pressed
-//     incorrectAudio.play();
-//   } else {
-//     feedbackA.textContent = "Correct!";
-//     correctAudio.play();
-//   }
-//   feedbackA.setAttribute("class", "feedback");
-//   setTimeout(function() {
-//     feedbackA.setAttribute("class", "feedback hide");
-//   }, 1000);
-//   // moves onto the next question
-//   currentQuestionIndex++;
-//   // check if we've run out of questions
-//   if (currentQuestionIndex === questions.length) {
-//     quizEnd();
-//   } else {
-//     getQuestion();
-//   }
-// }
+// Move on to the next question
+currentQuestionIndex++;
 
+// if there are no more questions
+if (currentQuestionIndex === questions.length) {
+    endQuiz();
+} else {
+    retrieveQuestions();
+}
+}
 
-// //Function that ends the quiz
-// function quizEnd() {
-//   clearInterval(timerId);
-//   endScreen.removeAttribute("class");
-//   // final score
-//   finalScore.textContent = time;
-//   questionsA.setAttribute("class", "hide");
-// }
+function endQuiz() {
+  // this hides the questions
+  questionsEl.setAttribute ("class", "hide");
+  // this shows the endscreen
+  endScreenEl.removeAttribute("class");
+  // this displays the final score
+  finalScoreEl.textContent = secondsLeft;}
 
+  function saveScore() {
+    // get the value of the input box
+    var initials = initialsEl.value;
+  
+    // make sure value wasn't empty
+    if (initials !== "") {
+      // get saved scores from localstorage, or if not any, set to empty array
+      var highScores =
+        JSON.parse(window.localStorage.getItem("highScores")) || [];
+  
+      // format new score object for current user
+      var newScore = {
+        score: secondsLeft,
+        initials: initials
+      };
+  
+      // save to localstorage
+      highScores.push(newScore);
+      window.localStorage.setItem("highScores", JSON.stringify(highScores));
+  
+      // redirect to next page
+      window.location.href = "highScores.html";
+    }
+  }
 
-
-// function countdown() {
-//   time--;
-//   timerA.textContent = time;
-//   if (time <= 0) {
-//     quizEnd();
-//   }
-// }
+  submitButton.addEventListener("click", saveScore);
 
 // // Function to save the high scores
 // function saveScore() {
@@ -193,6 +163,9 @@ startButton.addEventListener("click", retrieveQuestions)
 //     saveScore();
 //   }
 // }
+
+
+
 
 // // submit initials
 // submitBtn.onclick = saveScore;
