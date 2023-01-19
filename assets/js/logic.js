@@ -119,8 +119,8 @@ function endQuiz() {
     // make sure value wasn't empty
     if (initials !== "") {
       // get saved scores from localstorage, or if not any, set to empty array
-      var highScores =
-        JSON.parse(window.localStorage.getItem("highScores")) || [];
+      var highscores =
+        JSON.parse(window.localStorage.getItem("highscores")) || [];
   
       // format new score object for current user
       var newScore = {
@@ -129,50 +129,15 @@ function endQuiz() {
       };
   
       // save to localstorage
-      highScores.push(newScore);
-      window.localStorage.setItem("highScores", JSON.stringify(highScores));
+      highscores.push(newScore);
+      window.localStorage.setItem("highscores", JSON.stringify(highscores));
   
       // redirect to next page
-      window.location.href = "highScores.html";
+      window.location.href = "highscores.html";
     }
   }
 
   submitButton.addEventListener("click", saveScore);
-
-// // Function to save the high scores
-// function saveScore() {
-//   // box to insert initials to be saved in localstorage
-//   var initials = initialsA.value.trim();
-//   if (initials !== "") {
-//     var highscores =
-//       JSON.parse(window.localStorage.getItem("highscores")) || [];
-//     var newScore = {
-//       score: time,
-//       initials: initials
-//     };
-//     // this should save score to the local storage
-//     highscores.push(newScore);
-//     window.localStorage.setItem("highscores", JSON.stringify(highscores));
-//     window.location.href = "highscores.html";
-//   }
-// }
-
-// // Function lets you press enter on your keyboard 
-// function pressEnter(event) {
-//   if (event.key === "Enter") {
-//     saveScore();
-//   }
-// }
-
-
-
-
-// // submit initials
-// submitBtn.onclick = saveScore;
-
-// // onkeyup = when the key goes up the action happens
-// initialsA.onkeyup = pressEnter;
-
 
 
 
