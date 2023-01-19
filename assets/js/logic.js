@@ -22,23 +22,30 @@ var currentQuestion = questions[currentQuestionIndex]
 var correctSound = new Audio('./assets/sfx/correct.wav');
 var incorrectSound = new Audio('./assets/sfx/incorrect.wav');
 var secondsLeft = 90;
+var timeInterval;
+
 
 function countdown() {
   var timeInterval = setInterval(function () {
     secondsLeft--;
     timeEl.textContent = secondsLeft + " seconds";
-    if (secondsLeft <= 0) {
-      timeEl.textContent = '';
+    if (currentQuestionIndex === questions.length) {
       clearInterval(timeInterval);
+      // clearInterval(timeInterval);
+      endQuiz();
+    }
+    if (secondsLeft <= 0) {
+      clearInterval(timeInterval);
+      // timeEl.textContent = '';
+      // clearInterval(timeInterval);
       endQuiz();
       // and call the function of the endscreen?
     }
-  }, 1000);
-  if (currentQuestionIndex === questions.length) {
-    clearInterval(timeInterval);
-    endQuiz();
-  }
+  },1000);
+  
 };
+
+
 
 function gameStart() {
   // this hides the start screen
