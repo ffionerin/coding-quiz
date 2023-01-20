@@ -9,7 +9,7 @@ This is multiple choice quiz that uses Javascript to update the HTML and CSS dyn
 * Feedback to the user regarding whether their answer was correct or incorrect both on screen and using
 * The ability for users to enter their initials and save their score to local storage
 
-## Screenshot
+## Screenshots of website
 
 ![Screenshot of start page](assets/images/screenshot-coding-quiz-1.png)
 ![Screenshot of question page](assets/images/screenshot-coding-quiz-2.png)
