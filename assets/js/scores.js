@@ -1,24 +1,21 @@
-// need to retrieve scores from local storage and display on the highscores html page
 
 
+
+// Function that retrives the score from local storage, sorts them from highest to lowest adn the, for each highscore, creates a list element which is filled by the user's initials and their score
 function getHighscores() {
-    // retrive the score from local storage
     var highscores = JSON.parse(window.localStorage.getItem("highscores")) || [];
-//   sort the high scores in order from highest to lowest
     highscores.sort(function(a, b) {
       return b.score - a.score;
     });
-//   for each high score, create a li element and fill it with the text from the users initials and their score (the seconds left)
     highscores.forEach(function(score) {
       var highscoresListItem = document.createElement("li");
       highscoresListItem.textContent = score.initials + " - " + score.score;
-      //   display score on page by grabbing the "highscores" ordered list from the HTML and appending the new score as a list item 
       var highscoresListEl = document.getElementById("highscores");
       highscoresListEl.appendChild(highscoresListItem);
     });
   }
   
-//   call function
+//   call the function
   getHighscores();
   
 //   grab the clear button from the html and add an event listener which calls the clearing function

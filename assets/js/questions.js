@@ -1,6 +1,6 @@
 
 
-
+// an array of the questions:
 var questions = [
     {
         question: "What is the correct HTML element for the largest heading?",
